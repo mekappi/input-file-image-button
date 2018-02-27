@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
+<title></title>
+<script type="text/javascript">
+<!--
+	//主処理部
+	$(function() {
+
+		// アップロードボタンを押下した
+		$("#userProfilePicture").change(function(event) {
+			// 要素規定の動作をキャンセルする
+			event.preventDefault();
+
+			var ajaxUrl = "xxxxxxx";
+			// ファイル種類
+			//ajaxUrl += "filetype=" + $("#userProfilePicture option:selected").val();
+			console.log(ajaxUrl)
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+
+			console.log(token, header);
+			$(document).ajaxSend(function(e, xhr, options) {
+				xhr.setRequestHeader(header, token);
+			});
+
+			if (window.FormData) {
+				var formData = new FormData($("#profileForm")[0]);
+				console.log(formData);
+				$.ajax({
+					type : "POST", // HTTP通信の種類
+					url : ajaxUrl, // リクエストを送信する先のURL
+					dataType : "text", // サーバーから返されるデータの型
+					data : formData, // サーバーに送信するデータ
+					processData : false,
+					contentType : false,
+				}).done(function(data) { // Ajax通信が成功した時の処理
+					alert("アップロードが完了しました。");
+				}).fail(function(XMLHttpRequest, textStatus, errorThrown) { // Ajax通信が失敗した時の処理
+					alert("アップロードが失敗しました。");
+				});
+			} else {
+				alert("アップロードに対応できていないブラウザです。");
+			}
+		});
+	});
+
+	-->
+</script>
+</head>
+<body>
+	<header></header>
+	<main>
+		<form class="ui form" method="post" action="/account/setting/profile/" id="profileForm">
+			<div class="field">
+			  <label>画像</label>
+			  <div>	  
+				<div class="profile-picture">
+					<label>
+						<img th:src="@{*{userProfilePicture}}" style="width:100px;"/></div>
+						<input type="file" id="userProfilePicture" name="userProfilePicture" style="display: none;" />
+					</label>
+				</div>  
+			  </div>
+			</div>
+		</form>
+	</main>
+</body>
+</html>
